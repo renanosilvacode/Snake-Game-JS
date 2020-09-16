@@ -3,14 +3,29 @@ let heigth;
 let tileSize;
 let canvas;
 let ctx;
+let fps = 10;
+
 let food;
+let snake;
+
+let score;
+let isPaused;
+
+function game(){
+    init();
+
+    // the loop of the game
+    interval = setInterval(update, 1000/fps);
+}
 
 function init(){
     
+    score = 0;
+    isPaused = false;
     tileSize = 20;
 
     width = tileSize * Math.floor(window.innerWidth / tileSize);
-    heigth = tileSize * Math.floor(window.innerHeight / tileSize);
+    height = tileSize * Math.floor(window.innerHeight / tileSize);
 
     canvas = document.getElementById("game-area");
     canvas.width = width;
@@ -19,6 +34,7 @@ function init(){
     ctx = canvas.getContext("2d");
 
     food = new Food(spawnLocation(), "red")
+    snake = new Snake({ x: tileSize * Math.floor(width / (2 * tileSize)), y: tileSize * Math.floor(height / (2 * tileSize))}, "#39ff14");
 }
 
 
@@ -85,7 +101,8 @@ class Snake {
             ctx.fillStyle = this.color;
             ctx.fill();
             ctx.strokeStyle = "black";
-            ctx.stroke() = 3;
+            ctx.lineWidth = 3;
+            ctx.stroke();
             ctx.closePath();
 
         }
@@ -144,3 +161,50 @@ class Snake {
             this.y = heigth - this.y;
     }
 }
+
+function update() {
+
+    if (isPaused)
+        return;
+
+    if (snake.die()){
+        alert("Game Over!");
+        clearInterval(interval);
+        window.location.reload();
+    }
+
+    snake.border();
+
+    if (snake.eat()) {
+        food = new Food(spawnLocation(), "red");
+    }
+
+    ctx.clearRect(0, 0, width, height);
+
+    food.draw();
+    snake.draw();
+    snake.move();
+
+    showScore();
+    //score += 10;
+}
+
+function showScore(){
+
+    ctx.textAlign = "center";
+    ctx.font = "25px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText("SCORE: " + score, width - 120, 30);
+}
+
+function showPaused(){
+
+    ctx.textAlign = "center";
+    ctx.font = "35px Arial";
+    ctx.fillStyle = "white";
+    ctx.fillText("PAUSED", width / 2, height / 2);
+}
+
+window.addEventListener("load", function(){
+    game();
+});
