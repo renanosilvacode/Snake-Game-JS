@@ -177,6 +177,7 @@ function update() {
 
     if (snake.eat()) {
         food = new Food(spawnLocation(), "red");
+        score += 10;
     }
 
     ctx.clearRect(0, 0, width, height);
@@ -186,7 +187,6 @@ function update() {
     snake.move();
 
     showScore();
-    //score += 10;
 }
 
 function showScore(){
@@ -207,4 +207,35 @@ function showPaused(){
 
 window.addEventListener("load", function(){
     game();
+});
+
+// Adding an event listener for key presses.
+window.addEventListener("keydown", function (evt) {
+    
+    if (evt.key === " ") {
+        evt.preventDefault();
+        isPaused = !isPaused;
+        showPaused();
+    }
+    else if (evt.key === "ArrowUp") {
+        evt.preventDefault();
+        if (snake.velY != 1 && snake.x >= 0 && snake.x <= width && snake.y >= 0 && snake.y <= height)
+            snake.dir(0, -1);
+    }
+    else if (evt.key === "ArrowDown") {
+        evt.preventDefault();
+        if (snake.velY != -1 && snake.x >= 0 && snake.x <= width && snake.y >= 0 && snake.y <= height)
+            snake.dir(0, 1);
+    }
+    else if (evt.key === "ArrowLeft") {
+        evt.preventDefault();
+        if (snake.velX != 1 && snake.x >= 0 && snake.x <= width && snake.y >= 0 && snake.y <= height)
+            snake.dir(-1, 0);
+    }
+    else if (evt.key === "ArrowRight") {
+        evt.preventDefault();
+        if (snake.velX != -1 && snake.x >= 0 && snake.x <= width && snake.y >= 0 && snake.y <= height)
+            snake.dir(1, 0);
+    }
+
 });
